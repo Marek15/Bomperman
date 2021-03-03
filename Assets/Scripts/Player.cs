@@ -41,10 +41,12 @@ public class Player : MonoBehaviour {
     private void FixedUpdate() {
 
         if (Physics.OverlapSphere(groundCheckTransform.position, .1f, playerMask).Length == 0) {
+            isJumping = false;
             return;
         }
         
         if (isJumping) {
+            print(Physics.OverlapSphere(groundCheckTransform.position, .1f));
             float jumpPower = 5f;
             rigidBodyComponent.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
             isJumping = false;
