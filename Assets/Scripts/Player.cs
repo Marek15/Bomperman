@@ -2,12 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
     [SerializeField] private Joystick joystick;
     [SerializeField] private Transform groundCheckTransform;
     [SerializeField] private LayerMask playerMask;
     [SerializeField] private LayerMask bonusLifeMask;
+    [SerializeField] private Image[] hearths;
+    [SerializeField] private Sprite fullHeart, emptyHeart;
 
     private Rigidbody rigidBodyComponent;
 
@@ -35,10 +38,20 @@ public class Player : MonoBehaviour {
         if (joystick.Vertical >= .5f) {
             isJumping = true;
         }
-
-        // if (transform.position.y < -10) {
-            // transform.position.y = 15;
-        // }
+        
+        //check players lifes
+        for (int i = 0; i < 3; i++) {
+            if (i < lifeCount) {
+                hearths[i].sprite = fullHeart;
+            }
+            else {
+                hearths[i].sprite = emptyHeart;
+            }
+        }
+        
+        if (transform.position.y < -10) {
+            lifeCount = 0;
+        }
     }
 
     private void FixedUpdate() {
