@@ -26,14 +26,19 @@ public class Player : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        horizontalMove = joystick.Horizontal * runSpeed;
 
+        // player move horizontal logic
+        horizontalMove = joystick.Horizontal * runSpeed;
         rigidBodyComponent.velocity = new Vector3(horizontalMove, rigidBodyComponent.velocity.y, 0);
 
         //check if joysticck up is more than set value
         if (joystick.Vertical >= .5f) {
             isJumping = true;
         }
+
+        // if (transform.position.y < -10) {
+            // transform.position.y = 15;
+        // }
     }
 
     private void FixedUpdate() {
@@ -49,7 +54,9 @@ public class Player : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.layer == 9) {
             Destroy(other.gameObject);
-            lifeCount++;
+            if (lifeCount <= 3) {
+                lifeCount++;
+            }
         }
     }
 }
