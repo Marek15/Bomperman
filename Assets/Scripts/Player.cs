@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour {
     [SerializeField] private Joystick joystick;
@@ -51,6 +52,7 @@ public class Player : MonoBehaviour {
         
         if (transform.position.y < -10) {
             lifeCount = 0;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
 
