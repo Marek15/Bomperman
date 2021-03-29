@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour {
     [SerializeField] private Joystick joystick;
-    [SerializeField] private Transform groundCheckTransform;
-    [SerializeField] private LayerMask playerMask;
-    [SerializeField] private LayerMask bonusLifeMask;
     [SerializeField] private Image[] hearths;
     [SerializeField] private Sprite fullHeart, emptyHeart;
+    [SerializeField] private LayerMask layerMaskForGround;
 
-    private Rigidbody rigidBodyComponent;
+    private Rigidbody2D rigidBodyComponent;
 
     private float runSpeed = 5f;
-    private float horizontalMove = 0f;
+    private float horizontalMove;
 
-    private bool isJumping = false;
+    private bool isJumping;
     private float jumpPower = 4f;
 
     private int lifeCount = 2;
+    
+    
+    float isGroundedRayLength = 0.1f;
 
     // Start is called before the first frame update
     void Start() {
-        rigidBodyComponent = GetComponent<Rigidbody>();
+        rigidBodyComponent = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -33,7 +31,7 @@ public class Player : MonoBehaviour {
 
         // player move horizontal logic
         horizontalMove = joystick.Horizontal * runSpeed;
-        rigidBodyComponent.velocity = new Vector3(horizontalMove, rigidBodyComponent.velocity.y, 0);
+        rigidBodyComponent.velocity = new Vector2(horizontalMove, rigidBodyComponent.velocity.y);
 
         //check if joysticck up is more than set value
         if (joystick.Vertical >= .5f) {
@@ -57,21 +55,32 @@ public class Player : MonoBehaviour {
     }
 
     private void FixedUpdate() {
+        
         // check if player is on ground if true return and not jump
-        if (Physics.OverlapSphere(groundCheckTransform.position, .1f, playerMask).Length == 0) return;
-
-        if (isJumping) {
-            rigidBodyComponent.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
+        if (isJumping && IsGrounded) {
+            rigidBodyComponent.AddForce(Vector2.up * jumpPower, (ForceMode2D) ForceMode.VelocityChange);
             isJumping = false;
         }
     }
 
-    private void OnTriggerEnter(Collider other) {
+    private void OnTriggerEnter2D(Collider2D other) {
+        
         if (other.gameObject.layer == 9) {
             Destroy(other.gameObject);
-            if (lifeCount <= 3) {
-                lifeCount++;
-            }
+            
+            if (lifeCount <= 3) lifeCount++;
+        }
+    }
+    
+    public bool IsGrounded {
+        get {
+            Vector3 position = transform.position;
+            position.y = GetComponent<Collider2D>().bounds.min.y + 0.1f;
+            float length = isGroundedRayLength + 0.1f;
+            Debug.DrawRay(position, Vector3.down * length);
+            bool grounded = Physics2D.Raycast(position, Vector3.down, length, layerMaskForGround.value);
+
+            return grounded;
         }
     }
 }
