@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -17,8 +18,8 @@ public class Player : MonoBehaviour {
     private float jumpPower = 4f;
 
     private int lifeCount = 2;
-    
-    
+
+
     float isGroundedRayLength = 0.1f;
 
     // Start is called before the first frame update
@@ -71,7 +72,17 @@ public class Player : MonoBehaviour {
             if (lifeCount <= 3) lifeCount++;
         }
     }
-    
+
+    private void OnCollisionEnter2D(Collision2D other) {
+        
+        if (other.gameObject.layer == 11) {
+            float time = Time.timeSinceLevelLoad;
+            Math.Round(time, 4);
+            PlayerPrefs.SetString("timeFromStart", time.ToString());
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+    }
+
     public bool IsGrounded {
         get {
             Vector3 position = transform.position;
