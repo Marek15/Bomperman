@@ -1647,6 +1647,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Title (35)
       objectReference: {fileID: 0}
+    - target: {fileID: 4674237481030381885, guid: 6e4b8960144c94041919aef279a95571,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4674237481030381885, guid: 6e4b8960144c94041919aef279a95571,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 6126201241234849602, guid: 6e4b8960144c94041919aef279a95571,
         type: 3}
       propertyPath: m_RootOrder
@@ -4403,6 +4413,7 @@ GameObject:
   - component: {fileID: 1775707433}
   - component: {fileID: 1775707429}
   - component: {fileID: 1775707428}
+  - component: {fileID: 1775707434}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -4502,7 +4513,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1775707427}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -28.14, y: 0.75, z: 0}
+  m_LocalPosition: {x: -28, y: 2.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 519420032}
@@ -4531,6 +4542,19 @@ MonoBehaviour:
   layerMaskForGround:
     serializedVersion: 2
     m_Bits: 1024
+--- !u!114 &1775707434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1775707427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b61a5501074ff9841bc71eaf7ca0cebc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 0}
 --- !u!4 &1782814440 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6126201241234849602, guid: 6e4b8960144c94041919aef279a95571,
