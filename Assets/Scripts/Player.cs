@@ -11,6 +11,7 @@ public class Player : MonoBehaviour {
     [SerializeField] private float runSpeed = 12f;
 
     private Rigidbody2D rigidBody;
+    private BoxCollider2D boxCollider2D;
 
     private float xVelocity = 0f;
     private float yVelocity = 0f;
@@ -21,6 +22,7 @@ public class Player : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         rigidBody = GetComponent<Rigidbody2D>();
+        boxCollider2D = transform.GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -58,14 +60,15 @@ public class Player : MonoBehaviour {
     public bool IsGrounded {
         get {
             Vector3 position = transform.position;
-            position.y = GetComponent<Collider2D>().bounds.min.y + 0.1f;
-            float length = isGroundedRayLength + 0.1f;
-            Debug.DrawRay(position, Vector3.down * length);
-            bool grounded = Physics2D.Raycast(position, Vector3.down, length, layerMaskForGround.value);
+            RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, 1f, layerMaskForGround);
+            // position.y = GetComponent<Collider2D>().bounds.min.y + 0.1f;
+            // float length = isGroundedRayLength + 0.1f;
+            // Debug.DrawRay(position, Vector3.down * length);
+            // bool grounded = Physics2D.Raycast(position, Vector3.down, length, layerMaskForGround.value);
 
-            animator.SetBool("jumping", !grounded);
+            // animator.SetBool("jumping", !grounded);
 
-            return grounded;
+            return raycastHit.collider != null;
         }
     }
 }
