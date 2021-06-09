@@ -34,11 +34,12 @@ public class Player : MonoBehaviour {
         }else if(joystick.Horizontal < -.3f){
             xVelocity = -runSpeed;
             transform.eulerAngles = new Vector3(0, 180, 0);
-        }else
+        }else 
             xVelocity = 0f;
 
         // player move vertical logic
-        if(IsGrounded && joystick.Vertical >= 0.5f)
+        bool grounded = IsGrounded;
+        if(grounded && joystick.Vertical >= 0.5f)
             yVelocity = jumpPower;
         else
             yVelocity = rigidBody.velocity.y;
@@ -47,6 +48,7 @@ public class Player : MonoBehaviour {
 
         animator.SetFloat("xVelocity", xVelocity);
         animator.SetFloat("yVelocity", rigidBody.velocity.y);
+        animator.SetBool("jumping", !grounded);
     }
 
     private void OnTriggerEnter2D(Collider2D other) {

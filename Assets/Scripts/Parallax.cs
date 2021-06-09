@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Parallax : MonoBehaviour{
-    public Camera cam;
-    public Transform subject;
+    public Camera mainCam;
+    public Transform player;
 
     Vector2 startPos;
     float startZ;
@@ -13,8 +13,8 @@ public class Parallax : MonoBehaviour{
     [SerializeField]
     float speed = 0f;
 
-    float distanceFromSubject => transform.position.z - subject.position.z;
-    float clippingPlane => cam.transform.position.z + (distanceFromSubject > 0 ? cam.farClipPlane : cam.nearClipPlane);
+    float distanceFromSubject => transform.position.z - player.position.z;
+    float clippingPlane => mainCam.transform.position.z + (distanceFromSubject > 0 ? mainCam.farClipPlane : mainCam.nearClipPlane);
     float parallaxFactor => Mathf.Abs(distanceFromSubject) / clippingPlane;
 
     // Start is called before the first frame update
@@ -26,12 +26,12 @@ public class Parallax : MonoBehaviour{
 
     // Update is called once per frame
     void Update(){
-        Vector2 newPos = startPos + (Vector2)cam.transform.position * parallaxFactor;
+        Vector2 newPos = startPos + (Vector2)mainCam.transform.position * parallaxFactor;
         transform.position = new Vector3(newPos.x+Time.time*-speed, newPos.y, startZ);
 
-        if (cam.transform.position.x > transform.position.x + spriteWidth)
+        if (mainCam.transform.position.x > transform.position.x + spriteWidth)
             startPos.x += spriteWidth;
-        else if (cam.transform.position.x < transform.position.x)
+        else if (mainCam.transform.position.x < transform.position.x)
             startPos.x -= spriteWidth;
     }
 }
