@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -9,6 +10,7 @@ public class Player : MonoBehaviour {
     [SerializeField] private LayerMask layerMaskForGround;
     [SerializeField] private float jumpPower = 10f;
     [SerializeField] private float runSpeed = 12f;
+    [SerializeField] private GameObject[] hearts;
 
     private Rigidbody2D rigidBody;
     private BoxCollider2D boxCollider2D;
@@ -16,8 +18,12 @@ public class Player : MonoBehaviour {
     private float xVelocity = 0f;
     private float yVelocity = 0f;
 
-    private int lifeCount = 2;
     float isGroundedRayLength = 0.2f;
+    
+    public int lifeCount = 3;
+    
+
+    // private Vector2 hearth_pos, player_pos;
 
     // Start is called before the first frame update
     void Start() {
@@ -27,6 +33,21 @@ public class Player : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        Debug.Log(lifeCount);
+
+        if (lifeCount < 1 ) {
+            Destroy(hearts[0].gameObject);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        else if (lifeCount < 2 ) {
+            Destroy(hearts[1].gameObject);
+        }
+        else if (lifeCount < 3 ) {
+            Destroy(hearts[2].gameObject);
+        }
+        
+        
+        
         // player move horizontal logic
         if(joystick.Horizontal > .3f){
             xVelocity = runSpeed;
@@ -51,14 +72,27 @@ public class Player : MonoBehaviour {
         animator.SetBool("jumping", !grounded);
     }
 
-    private void OnTriggerEnter2D(Collider2D other) {
-        if (other.gameObject.layer == 9) {
-            Destroy(other.gameObject);
-            
-            if (lifeCount <= 3) lifeCount++;
-        }
-    }
-    
+    // private void OnTriggerEnter2D(Collider2D other) {   
+    //     Debug.Log("huhu");
+    //     if (other.gameObject.layer == 9) {
+    //         Destroy(other.gameObject);
+    //         
+    //         if (lifeCount <= 3) lifeCount++;
+    //     }
+    // }
+    //
+    // private void OnTriggerEnter(Collider other) {
+    //     Debug.Log("huhu");
+    // }
+
+    // private void OnCollisionEnter2D(Collision2D other) {
+    //     Console.Write("huhu");
+    //     if (other.gameObject.layer == 12) {
+    //         rigidBody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+    //         Debug.Log("joo");
+    //     }
+    // }
+
     public bool IsGrounded {
         get {
             Vector3 position = transform.position;
