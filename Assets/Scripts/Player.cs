@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -18,12 +20,12 @@ public class Player : MonoBehaviour {
     private float xVelocity = 0f;
     private float yVelocity = 0f;
 
-    float isGroundedRayLength = 0.2f;
-    
-    public int lifeCount = 3;
-    
+    private int lifeCount = 3;
 
-    // private Vector2 hearth_pos, player_pos;
+    private bool destroy = false;
+    private bool stopMovingPlayer = false;
+    private GameObject enemy;
+    
 
     // Start is called before the first frame update
     void Start() {
@@ -33,8 +35,6 @@ public class Player : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        Debug.Log(lifeCount);
-
         if (lifeCount < 1 ) {
             Destroy(hearts[0].gameObject);
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -45,65 +45,70 @@ public class Player : MonoBehaviour {
         else if (lifeCount < 3 ) {
             Destroy(hearts[2].gameObject);
         }
-        
-        
-        
-        // player move horizontal logic
-        if(joystick.Horizontal > .3f){
-            xVelocity = runSpeed;
-            transform.eulerAngles = new Vector3(0, 0, 0);
-        }else if(joystick.Horizontal < -.3f){
-            xVelocity = -runSpeed;
-            transform.eulerAngles = new Vector3(0, 180, 0);
-        }else 
-            xVelocity = 0f;
 
-        // player move vertical logic
-        bool grounded = IsGrounded;
-        if(grounded && joystick.Vertical >= 0.5f)
-            yVelocity = jumpPower;
-        else
-            yVelocity = rigidBody.velocity.y;
 
-        rigidBody.velocity = new Vector2(xVelocity, yVelocity);
+        if (stopMovingPlayer) {
+            rigidBody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+
+        }
+        else {
+            
+        
+            // player move horizontal logic
+            if(joystick.Horizontal > .3f){
+                xVelocity = runSpeed;
+                transform.eulerAngles = new Vector3(0, 0, 0);
+            }else if(joystick.Horizontal < -.3f){
+                xVelocity = -runSpeed;
+                transform.eulerAngles = new Vector3(0, 180, 0);
+            }else 
+                xVelocity = 0f;
+
+            bool grounded = IsGrounded;
+            // player move vertical logic
+            if(grounded && joystick.Vertical >= 0.5f)
+                yVelocity = jumpPower;
+            else
+                yVelocity = rigidBody.velocity.y;
+
+            rigidBody.velocity = new Vector2(xVelocity, yVelocity);
+            
 
         animator.SetFloat("xVelocity", xVelocity);
         animator.SetFloat("yVelocity", rigidBody.velocity.y);
         animator.SetBool("jumping", !grounded);
+        }
     }
 
-    // private void OnTriggerEnter2D(Collider2D other) {   
-    //     Debug.Log("huhu");
-    //     if (other.gameObject.layer == 9) {
-    //         Destroy(other.gameObject);
-    //         
-    //         if (lifeCount <= 3) lifeCount++;
-    //     }
-    // }
-    //
-    // private void OnTriggerEnter(Collider other) {
-    //     Debug.Log("huhu");
-    // }
+    private void FixedUpdate() {
+        if (destroy) {
+            Destroy(enemy);
+            destroy = false;
+        }
+    }
 
-    // private void OnCollisionEnter2D(Collision2D other) {
-    //     Console.Write("huhu");
-    //     if (other.gameObject.layer == 12) {
-    //         rigidBody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
-    //         Debug.Log("joo");
-    //     }
-    // }
+    private void OnTriggerEnter2D(Collider2D other) {
+        
+        if (other.gameObject.layer == 12 && enemy != other.gameObject) {
+            // Destroy(other.gameObject);
+            enemy = other.gameObject;
+            StartCoroutine(Freeze());
+        }
+    }
+    
+    IEnumerator Freeze() {
+        stopMovingPlayer = true;
+        yield return new WaitForSeconds(1.5f);
+        lifeCount--;
+        stopMovingPlayer = false;
+        destroy = true;
+        rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
+    }
+
 
     public bool IsGrounded {
         get {
-            Vector3 position = transform.position;
             RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, 1f, layerMaskForGround);
-            // position.y = GetComponent<Collider2D>().bounds.min.y + 0.1f;
-            // float length = isGroundedRayLength + 0.1f;
-            // Debug.DrawRay(position, Vector3.down * length);
-            // bool grounded = Physics2D.Raycast(position, Vector3.down, length, layerMaskForGround.value);
-
-            // animator.SetBool("jumping", !grounded);
-
             return raycastHit.collider != null;
         }
     }
