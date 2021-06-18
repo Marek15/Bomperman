@@ -9,8 +9,7 @@ public class Timer : MonoBehaviour {
     [SerializeField] private Text text;
 
     private void Start() {
-        Debug.Log(PlayerPrefs.GetString("timeFromStart"));
-        text.text = PlayerPrefs.GetString("timeFromStart");
+        text.text = PlayerPrefs.GetFloat("timeFromStart").ToString() + " s";
         PlayerPrefs.DeleteKey("timeFromStart");
     }
 }

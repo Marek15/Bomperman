@@ -94,6 +94,12 @@ public class Player : MonoBehaviour {
             enemy = other.gameObject;
             StartCoroutine(Freeze());
         }
+
+
+        if (other.gameObject.layer == 13) {
+            PlayerPrefs.SetFloat("timeFromStart",Time.timeSinceLevelLoad);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
     }
     
     IEnumerator Freeze() {
